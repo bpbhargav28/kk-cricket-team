@@ -288,9 +288,9 @@ As long as that returns at least one `admin` with `is_active = true`, self-promo
 
 ## 7. Deploy to GitHub Pages
 
-### a. Add the repository secrets
+### a. Add the secrets
 
-**Settings → Secrets and variables → Actions → New repository secret**, twice:
+**Settings → Secrets and variables → Actions → New repository secret**, twice. Alternatively, put them on the `github-pages` environment (**Settings → Environments → github-pages**); the workflow builds inside that environment, so it reads either. Secrets on any *other* environment (e.g. `dev`) are not visible to it.
 
 | Secret name | Value |
 |---|---|

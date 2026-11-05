@@ -6,7 +6,7 @@ on:
     # workflow keeps working if the default branch is ever renamed.
     branches: [master, main]
   # Lets you re-deploy from the Actions tab without pushing a commit — useful
-  # right after adding the Supabase repository secrets.
+  # right after adding the Supabase secrets.
   workflow_dispatch:
 
 # Required by actions/deploy-pages.
@@ -21,9 +21,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build
+  # Build and deploy run as one job inside the `github-pages` environment, so
+  # the build can read secrets stored on that environment (Settings →
+  # Environments → github-pages) as well as repository-level secrets.
+  deploy:
+    name: Build and deploy
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,7 +51,6 @@ jobs:
 
       - name: Build
         env:
-          # Repository → Settings → Secrets and variables → Actions.
           # Only the publishable (anon) key belongs here. The service-role key
           # must never be added as a VITE_ secret — it would be inlined into the
           # public bundle.
@@ -60,7 +65,7 @@ jobs:
       - name: Warn if Supabase secrets are missing
         run: |
           if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
-            echo "::warning::VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set as repository secrets."
+            echo "::warning::VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set (checked repository and github-pages environment secrets)."
             echo "::warning::The site will deploy but show the setup screen until you add them."
           fi
 
@@ -72,14 +77,6 @@ jobs:
         with:
           path: dist
 
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
