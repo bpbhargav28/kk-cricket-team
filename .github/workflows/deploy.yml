@@ -31,7 +31,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -57,7 +57,7 @@ jobs:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || format('/{0}/', github.event.repository.name) }}
         run: npm run build
 
-      - name: Fail if Supabase secrets are missing
+      - name: Warn if Supabase secrets are missing
         run: |
           if [ -z "${{ secrets.VITE_SUPABASE_URL }}" ] || [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ]; then
             echo "::warning::VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set as repository secrets."
