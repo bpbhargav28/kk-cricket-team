@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    // `vite/client` has to be repeated here: setting `types` replaces the
+    // default list, and the test project needs it for `import.meta.env`.
+    "types": ["node", "vite/client"]
+  },
+  // vite-env.d.ts is included explicitly so the app modules pulled in by the
+  // tests still see the ImportMetaEnv declarations.
+  "include": ["src/vite-env.d.ts", "src/**/*.test.ts", "src/**/*.test.tsx"]
+}

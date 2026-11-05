@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-coal-800;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-coal-950 font-sans text-coal-100 antialiased;
+    /* Subtle pitch-stripe texture behind everything. */
+    background-image:
+      radial-gradient(1200px 600px at 50% -10%, rgba(22, 179, 100, 0.08), transparent 60%),
+      linear-gradient(180deg, #0e1013 0%, #08090b 100%);
+    background-attachment: fixed;
+    min-height: 100dvh;
+  }
+
+  /* Prevent iOS from zooming when focusing an input. */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1rem);
+  }
+
+  ::selection {
+    @apply bg-pitch-600/40 text-white;
+  }
+
+  /* Dark scrollbars that match the shell. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full border-2 border-solid border-transparent bg-coal-700 bg-clip-content;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-coal-600;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-pitch-500 ring-offset-2 ring-offset-coal-950;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-coal-800/80 bg-coal-900/70 shadow-card backdrop-blur-sm;
+  }
+
+  .card-hover {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:border-coal-700 hover:shadow-[0_12px_40px_-16px_rgba(0,0,0,0.8)];
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wider text-coal-400;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-coal-700/80 bg-coal-925 px-3.5 py-2.5 text-[15px] text-coal-50
+           placeholder:text-coal-500 transition-colors
+           focus:border-pitch-600 focus:bg-coal-900 focus:outline-none focus:ring-1 focus:ring-pitch-600/60
+           disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .field-error {
+    @apply border-rose-700/80 focus:border-rose-500 focus:ring-rose-600/50;
+  }
+
+  .stat-value {
+    @apply font-display text-3xl font-bold leading-none tracking-tight text-white;
+  }
+
+  .section-title {
+    @apply font-display text-lg font-semibold uppercase tracking-wide text-coal-200;
+  }
+
+  /* Loading skeleton with a travelling highlight. */
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg bg-coal-800/70;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-coal-700/40 to-transparent;
+    content: '';
+    transform: translateX(-100%);
+  }
+
+  /* Safe-area aware bottom padding so the mobile nav never covers content. */
+  .pb-nav {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in,
+    .animate-slide-up,
+    .animate-slide-down,
+    .animate-scale-in,
+    .animate-shimmer,
+    .animate-pulse-ring {
+      animation: none !important;
+    }
+    * {
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
